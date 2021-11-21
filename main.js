@@ -1,5 +1,6 @@
 img="";
 status= "";
+objects= [];
 
 function preload(){
     img= loadImage('dog_cat.jpg'); //loading the image
@@ -14,18 +15,20 @@ function setup(){
 }
 
 function draw(){
-    image(img, 0, 0, 640, 420);
-    fill("#FF0000"); // making the rectangle red
-    text("Dog", 45, 75); //making the text
-    noFill();
-    stroke("#FF0000"); //making the border red
-    rect(30, 60, 400, 350); //making the rectangle around the dog
+    image(img, 0, 0, 640, 420); //setting dimensions for the image
+    
+    if(status != ""){
+        for(i = 0; i < objects.length; i++){
+            document.getElementById("status").innerHTML = "Status : Object Detected"; //showing that object is detected
+            fill("#FF0000"); //filling the rectangle red so the text color is red
+            percent = floor(objects[i].confidence * 100); //finding the confidence of object detection
+            text(objects[i].label + " " + percent + "%", objects[i].x +3, objects[i].y +15); //showing the name and confidence of the objects
+            noFill();//removing the fill from the rectangle
+            stroke("#FF0000"); //making the border red
+            rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height,); //setting the dimensions of the rectangles
+        }
+    }
 
-    fill("#FF0000");
-    text("Cat", 320, 120);
-    noFill();
-    stroke("#FF0000");
-    rect(300, 90, 270, 310)
 }
 
 function modelLoaded(){
@@ -39,4 +42,5 @@ function gotResult(error, results){
         console.log(error);
     }
     console.log(results);
+    objects = results;
 }
